@@ -1,0 +1,14 @@
+{
+    "metadata": {
+        "input_file": "data\\tdt4287-unknown-adapter.txt",
+        "sample_limit": 100000,
+        "min_overlap": 10
+    },
+    "inference": {
+        "top_seed_kmer": "CTTCTGCTTGAA",
+        "seed_observations": 65291,
+        "seed_percentage_in_sample": 65.291,
+        "inferred_adapter_sequence": "GATCGGAAGAGCACACGTCTGAACTCCAGTCACGTAGAGATCTCGTATGCCGTCTTCTGCTTGAA",
+        "inferred_adapter_length": 65
+    }
+}
