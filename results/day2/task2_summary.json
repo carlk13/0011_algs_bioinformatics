@@ -1,0 +1,44 @@
+{
+    "metadata": {
+        "input_file": "data\\s_3_sequence_1M.txt",
+        "adapter_sequence": "TGGAATTCTCGGGTGCCAAGGAACTCCAGTCACACAGTGATCTCGTATGCCGTCTTCTGCTTG",
+        "min_overlap": 1,
+        "report_overlap_cutoff": 10,
+        "read_limit": null
+    },
+    "exact_task1_baseline": {
+        "total_reads": 1000000,
+        "trimmed_min_overlap": 646364,
+        "trimmed_report_cutoff": 388894,
+        "elapsed_time_seconds": 24.1616
+    },
+    "mismatch_10pct": {
+        "total_reads": 1000000,
+        "trimmed_reads_min_overlap": 670918,
+        "trimmed_reads_report_cutoff": 415579,
+        "trimmed_pct_min_overlap": 67.0918,
+        "trimmed_pct_report_cutoff": 41.5579,
+        "elapsed_time_seconds": 50.1971,
+        "throughput_reads_per_sec": 19921.49
+    },
+    "mismatch_25pct": {
+        "total_reads": 1000000,
+        "trimmed_reads_min_overlap": 708896,
+        "trimmed_reads_report_cutoff": 421015,
+        "trimmed_pct_min_overlap": 70.8896,
+        "trimmed_pct_report_cutoff": 42.1015,
+        "elapsed_time_seconds": 75.8403,
+        "throughput_reads_per_sec": 13185.6
+    },
+    "indels_dp": {
+        "evaluated_reads": 20000,
+        "trimmed_reads_min_overlap": 8520,
+        "trimmed_reads_report_cutoff": 8520,
+        "trimmed_pct_report_cutoff": 42.6,
+        "substitutions": 975,
+        "insertions": 32,
+        "deletions": 104,
+        "elapsed_time_seconds": 121.2601,
+        "throughput_reads_per_sec": 164.93
+    }
+}

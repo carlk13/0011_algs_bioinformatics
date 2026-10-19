@@ -1,0 +1,30 @@
+{
+    "metadata": {
+        "input_file": "data\\s_3_sequence_1M.txt",
+        "adapter_sequence": "TGGAATTCTCGGGTGCCAAGGAACTCCAGTCACACAGTGATCTCGTATGCCGTCTTCTGCTTG",
+        "report_overlap_cutoff": 10,
+        "dp_sample_evaluated": 20000,
+        "read_limit": null
+    },
+    "metrics": {
+        "total_adapter_reads": 415579,
+        "reads_with_errors": 26685,
+        "total_aligned_bases": 13791207,
+        "per_nucleotide_error_rate": 0.0024,
+        "per_sequence_error_rate": 0.064212,
+        "error_type_breakdown": {
+            "substitutions": {
+                "count": 975,
+                "percentage": 87.76
+            },
+            "insertions": {
+                "count": 32,
+                "percentage": 2.88
+            },
+            "deletions": {
+                "count": 104,
+                "percentage": 9.36
+            }
+        }
+    }
+}

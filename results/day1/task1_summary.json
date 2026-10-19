@@ -1,0 +1,15 @@
+{
+    "metadata": {
+        "input_file": "data\\s_3_sequence_1M.txt",
+        "adapter_sequence": "TGGAATTCTCGGGTGCCAAGGAACTCCAGTCACACAGTGATCTCGTATGCCGTCTTCTGCTTG",
+        "min_overlap": 1
+    },
+    "metrics": {
+        "total_reads": 1000000,
+        "trimmed_reads": 646364,
+        "untrimmed_reads": 353636,
+        "trimmed_percentage": 64.6364,
+        "elapsed_time_seconds": 24.1616,
+        "throughput_reads_per_sec": 41388.04
+    }
+}
