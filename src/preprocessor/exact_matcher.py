@@ -32,8 +32,8 @@ class ExactAdapterTrimmer:
         total_reads = 0
         trimmed_reads_count = 0
 
-        longest_overlap_distribution = Counter()
-        remaining_length_distribution = Counter()
+        longest_overlap_distribution: Counter[int] = Counter()
+        remaining_length_distribution: Counter[int] = Counter()
 
         # Start timer
         start_time = time.time()

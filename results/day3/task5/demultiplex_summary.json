@@ -1,0 +1,40 @@
+{
+    "metadata": {
+        "input_file": "data\\MultiplexedSamples",
+        "barcode_length": 4,
+        "max_mismatches": 1,
+        "adapter_sequence": "TCGTATGCCGTCTTCTGCTTGAAAAAA",
+        "min_overlap": 10
+    },
+    "metrics": {
+        "total_reads": 10687775,
+        "assigned_reads": 5967412,
+        "assigned_percentage": 55.834,
+        "unassigned_reads": 4720363,
+        "unassigned_percentage": 44.166,
+        "elapsed_time_seconds": 254.6186,
+        "throughput_reads_per_sec": 41975.62
+    },
+    "samples": {
+        "TAGC": {
+            "total_reads": 1690748,
+            "percentage_of_library": 15.8195,
+            "unique_sequences": 90723
+        },
+        "TGAG": {
+            "total_reads": 1838073,
+            "percentage_of_library": 17.1979,
+            "unique_sequences": 110789
+        },
+        "TCTT": {
+            "total_reads": 1207381,
+            "percentage_of_library": 11.2968,
+            "unique_sequences": 65707
+        },
+        "TTCA": {
+            "total_reads": 1231210,
+            "percentage_of_library": 11.5198,
+            "unique_sequences": 87925
+        }
+    }
+}

@@ -16,7 +16,7 @@ class UnknownAdapterFinder:
         self, read_stream: Generator[str], sample_limit: int | None = 200000
     ) -> list[tuple[str, int]]:
         """Extracts top frequent terminal suffix k-mers."""
-        suffix_counts = Counter()
+        suffix_counts: Counter[str] = Counter()
         for count, read in enumerate(read_stream):
             if sample_limit and count >= sample_limit:
                 break
@@ -36,28 +36,53 @@ class UnknownAdapterFinder:
         in reads containing the current consensus prefix.
         """
         # Load sample into memory for multi-round extension
-        reads = []
+        reads: list[str] = []
         for count, r in enumerate(read_stream):
             if sample_limit and count >= sample_limit:
                 break
             reads.append(r)
 
         consensus = list(seed)
+
+        # Leftward extension
+        while len(consensus) < max_length:
+            query = "".join(consensus[:12])
+            prev_base_counter: Counter[str] = Counter()
+            for r in reads:
+                idx = r.find(query)
+                if idx > 0:
+                    prev_base_counter[r[idx - 1]] += 1
+
+            if not prev_base_counter:
+                break
+
+            total_obs = sum(prev_base_counter.values())
+            best_prev_base, count = prev_base_counter.most_common(1)[0]
+            # Stop when consensus drops
+            if count / total_obs < 0.70 or count < 50:
+                break
+
+            consensus.insert(0, best_prev_base)
+
+        #  Rightward extension (towards 3' end)
         while len(consensus) < max_length:
             curr_str = "".join(consensus)
-            # Use the last 12-15 bp of current consensus as search query
             query = curr_str[-12:]
-            next_base_counter = Counter()
+            next_base_counter: Counter[str] = Counter()
 
             for r in reads:
                 idx = r.find(query)
                 if idx != -1 and idx + len(query) < len(r):
                     next_base_counter[r[idx + len(query)]] += 1
 
-            if not next_base_counter or next_base_counter.most_common(1)[0][1] < 50:
+            if not next_base_counter:
                 break
 
-            best_next_base, _ = next_base_counter.most_common(1)[0]
+            total_obs = sum(next_base_counter.values())
+            best_next_base, count = next_base_counter.most_common(1)[0]
+            if count / total_obs < 0.70 or count < 50:
+                break
+
             consensus.append(best_next_base)
 
         return "".join(consensus)

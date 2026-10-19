@@ -65,9 +65,9 @@ class HammingAdapterTrimmer:
         total_reads = 0
         trimmed_reads_count = 0
 
-        longest_overlap_distribution = Counter()
-        remaining_length_distribution = Counter()
-        mismatch_count_distribution = Counter()
+        longest_overlap_distribution: Counter[int] = Counter()
+        remaining_length_distribution: Counter[int] = Counter()
+        mismatch_count_distribution: Counter[int] = Counter()
 
         # Start timer
         start_time = time.time()
@@ -249,8 +249,8 @@ class SemiGlobalDPTrimmer:
     ) -> tuple:
         total_reads = 0
         trimmed_reads_count = 0
-        longest_overlap_distribution = Counter()
-        remaining_length_distribution = Counter()
+        longest_overlap_distribution: Counter[int] = Counter()
+        remaining_length_distribution: Counter[int] = Counter()
         total_subs = 0
         total_ins = 0
         total_dels = 0
