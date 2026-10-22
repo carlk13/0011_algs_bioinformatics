@@ -64,6 +64,12 @@ def main() -> None:
         default=100000,
         help="Sample size for discovering candidate barcodes (default: 100000)",
     )
+    parser.add_argument(
+        "--read-limit",
+        type=int,
+        default=None,
+        help="Optional maximum number of total reads to process (default: all)",
+    )
 
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -78,7 +84,7 @@ def main() -> None:
     print(f"Output Dir     : {args.output_dir}")
     print("-" * 60)
 
-    # discover sample barcodes
+    # Phase 1: Discover or configure sample barcodes
     if args.barcodes:
         barcodes = args.barcodes
         print(f"\n[Phase 1] Using specified barcodes: {barcodes}")
@@ -107,7 +113,7 @@ def main() -> None:
         idx = args.adapter.find("TCGTATGCCGTCTTCTGCTTG")
         adapter_to_use = args.adapter[idx:] + "AAAAAA"
 
-    # demultiplexing
+    # Phase 2: Demultiplexing library
     print(f"\n[Phase 2] Demultiplexing library across {len(barcodes)} samples...")
     demux = LibraryDemultiplexer(
         known_barcodes=barcodes,
@@ -118,7 +124,7 @@ def main() -> None:
 
     total_reads = 0
     start_time = time.time()
-    for read in stream_lines(args.input, show_progress=True):
+    for read in stream_lines(args.input, limit=args.read_limit, show_progress=True):
         total_reads += 1
         demux.process_read(read)
 
@@ -135,10 +141,17 @@ def main() -> None:
     samples_summary = {}
     for bc, stats in demux.samples.items():
         sample_pct = (stats.total_reads / total_reads * 100) if total_reads > 0 else 0.0
+        top_seq, top_cnt = (
+            stats.sequence_frequencies.most_common(1)[0]
+            if stats.sequence_frequencies
+            else ("N/A", 0)
+        )
         samples_summary[bc] = {
             "total_reads": stats.total_reads,
             "percentage_of_library": round(sample_pct, 4),
             "unique_sequences": len(stats.sequence_frequencies),
+            "most_frequent_sequence": top_seq,
+            "most_frequent_count": top_cnt,
         }
 
     summary_data = {
@@ -165,6 +178,7 @@ def main() -> None:
         json.dump(summary_data, f, indent=4)
     print(f"  Saved summary JSON to: {summary_json_path}")
 
+    # Export per-sample read length distributions
     for bc, stats in demux.samples.items():
         sample_csv_path = args.output_dir / f"sample_lengths_{bc}.csv"
         with open(sample_csv_path, "w", newline="", encoding="utf-8") as f:
@@ -178,6 +192,7 @@ def main() -> None:
                 writer.writerow([length, count, f"{pct:.4f}"])
         print(f"  Saved length distribution for {bc} to: {sample_csv_path}")
 
+    # Export top sequences per sample
     top_seqs_csv_path = args.output_dir / "top_sequences_per_sample.csv"
     with open(top_seqs_csv_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -202,7 +217,7 @@ def main() -> None:
     print(f"Unassigned Reads       : {unassigned_reads:,} ({unassigned_pct:.2f}%)")
     print(f"Elapsed Time           : {elapsed_time:.2f} seconds")
     print(f"Throughput             : {throughput:,.2f} reads/sec")
-    print("\nPer-Sample Read Allocation:")
+    print("\nPer-Sample Read Allocation & Most Frequent Sequence:")
     for bc, stats in demux.samples.items():
         pct = (stats.total_reads / total_reads * 100) if total_reads > 0 else 0.0
         top_seq, top_cnt = (
@@ -211,7 +226,8 @@ def main() -> None:
             else ("N/A", 0)
         )
         print(
-            f"  - Sample [{bc}]: {stats.total_reads:,} reads ({pct:.2f}%) | Top: {top_seq[:18]}... ({top_cnt:,})"
+            f"  - Sample [{bc}]: {stats.total_reads:,} reads ({pct:.2f}%) | "
+            f"Top ({len(top_seq)} bp): {top_seq} ({top_cnt:,} reads)"
         )
     print("=" * 60)
 
